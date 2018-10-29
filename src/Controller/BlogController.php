@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class BlogController extends AbstractController
 {
     /**
-     * @Route("/blog/{slug}", requirements={"slug"="[a-z0-9-]+"}, name="blog_list")
+     * @Route("/blog/{slug}", requirements={"slug"="[a-z0-9-]+"}, name="blog_list", defaults={"slug"="Article Sans Titre"})
      */
     public function show($slug)
     {
