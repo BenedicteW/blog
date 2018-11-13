@@ -4,12 +4,11 @@
 
 {% block body %}
 
-
-    <h3>La</h3>
-    {#{% for  in  %}#}
-        <h5 class="ml-5"><a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> show article</a></h5>
-        <p class="collapse" id="collapseExample"></p>
-    {#{% endfor %}#}
+    <h3>{{ articles.0.category.name }}</h3>
+    {% for article in articles %}
+        <h5 class="ml-5">{{ article.id }} <a data-toggle="collapse" href="#collapseExample{{ article.id }}" role="button" aria-expanded="false" aria-controls="collapseExample"> {{ article.title }}</a></h5>
+        <p class="collapse" id="collapseExample{{ article.id }}">{{ article.content }}</p>
+    {% endfor %}
 
 
 

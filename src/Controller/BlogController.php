@@ -62,7 +62,7 @@ class BlogController extends AbstractController
      */
     public function show($slug) : Response
     {
-        if (!slug) {
+        if (!$slug) {
             throw $this
                 ->createNotFoundException('No slug has been sent to find an article in article\'s table.');
         }
@@ -78,7 +78,7 @@ class BlogController extends AbstractController
 
         if (!$article) {
             throw $this->createNotFoundException(
-                'No article with '.$slug.' title, found in article\'s table.'
+                'No article with title, found in article\'s table.'
             );
         }
 
@@ -86,16 +86,22 @@ class BlogController extends AbstractController
     }
 
     /**
-     * @Route("/category/{category}", name="blog_show_category)
+     * @Route("/category/{category<^[a-z0-9-]+$>}", name="blog_show_category")
      */
     public function showByCategory(string $category)
     {
-        $categoryCollection = $this->getDoctrine()->getRepository(Category::class)->findOneByName();
+        $category = preg_replace(
+            '/-/',
+            ' ', ucwords(trim(strip_tags($category)), "-"));
 
-        if (!$categoryCollection) {
+        $category = $this->getDoctrine()->getRepository(Category::class)->findOneByName($category);
+
+        $articles = $this->getDoctrine()->getRepository(Article::class)->findByCategory($category, ['id'=>'DESC'], 3);
+
+        if (!$articles) {
             throw $this->createNotFoundException('No articles in '.$category.' category.');
         }
 
-        return $this->render('blog/category.html.twig', ['categoryCollection' => $categoryCollection]);
+        return $this->render('blog/category.html.twig', ['articles' => $articles, 'category'=>$category]);
     }
 }
