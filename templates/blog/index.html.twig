@@ -1,17 +1,19 @@
+{# templates/blog/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello !{% endblock %}
+{% block title %}Index{% endblock %}
+
+{% block stylesheets %}{% endblock %}
 
 {% block body %}
-
-{% for category in resultats %}
-    <h3>{{ category.owner.name }}</h3>
-    {% for article in category %}
-        <h5 class="ml-5">{{ article.title }}<a data-toggle="collapse" href="#collapseExample{{ article.id }}" role="button" aria-expanded="false" aria-controls="collapseExample"> show article</a></h5>
-        <p class="collapse" id="collapseExample{{ article.id }}">{{ article.content }}</p>
+    <h1>All articles from article s table : </h1>
+    {% for article in articles %}
+        <div>
+            <h2>{{ loop.index }} / {{ article.title }} - Category : {{ article.category.name }}</h2>
+            <p>{{ article.content }}</p>
+        </div>
     {% endfor %}
-{% endfor %}
-
-
-
+    <a href="{{ path('blog_index') }}">
+        Back to homepage.
+    </a>
 {% endblock %}
