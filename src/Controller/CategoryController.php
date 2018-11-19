@@ -22,6 +22,7 @@ class CategoryController extends AbstractController
 {
     /**
      * @Route("/category", name="category_add")
+     * @return Response A response instance
      */
     public function add(Request $request) :Response
     {
