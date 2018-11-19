@@ -4,18 +4,32 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Form\ArticleSearchType;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BlogController extends AbstractController
 {
     /**
-     * @Route("/", name="blog_index")
+     * @Route("/blog/articles", name="blog_search")
      * @return Response A response instance
      */
-    public function index() :Response
+    public function index(Request $request) :Response
     {
+        $form = $this->createForm(
+            ArticleSearchType::class,
+            null,
+            ['method' => Request::METHOD_GET]
+        );
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            var_dump($data);
+        }
+
         $articles = $this->getDoctrine()
             ->getRepository(Article::class)
             ->findAll();
@@ -27,8 +41,8 @@ class BlogController extends AbstractController
         }
 
         return $this->render(
-            'blog/index.html.twig',
-            ['articles' => $articles]
+            'blog/search.html.twig',
+            ['articles' => $articles, 'form' => $form->createView()]
         );
     }
 
@@ -37,8 +51,6 @@ class BlogController extends AbstractController
      */
     public function showAll()
     {
-
-
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
         foreach ($categories as $category){
             $articles = $this->getDoctrine()->getRepository(Article::class)->findBy(['category'=> $category->getId()]);
@@ -55,7 +67,7 @@ class BlogController extends AbstractController
      *
      * @param string $slug The slugger
      *
-     * @Route("/{slug<^[a-z0-9-]+$>}",
+     * @Route("/blog/{slug<^[a-z0-9-]+$>}",
      *     defaults={"slug" = null},
      *     name="blog_show")
      *  @return Response A response instance
@@ -82,26 +94,7 @@ class BlogController extends AbstractController
             );
         }
 
-        return $this->render('blog/show.html.twig', ['article' => $article]);
+        return $this->render('blog/show.html.twig', ['article' => $article, 'slug'=>$slug]);
     }
 
-    /**
-     * @Route("/category/{category<^[a-z0-9-]+$>}", name="blog_show_category")
-     */
-    public function showByCategory(string $category)
-    {
-        $category = preg_replace(
-            '/-/',
-            ' ', ucwords(trim(strip_tags($category)), "-"));
-
-        $category = $this->getDoctrine()->getRepository(Category::class)->findOneByName($category);
-
-        $articles = $this->getDoctrine()->getRepository(Article::class)->findByCategory($category, ['id'=>'DESC'], 3);
-
-        if (!$articles) {
-            throw $this->createNotFoundException('No articles in '.$category.' category.');
-        }
-
-        return $this->render('blog/category.html.twig', ['articles' => $articles, 'category'=>$category]);
-    }
 }

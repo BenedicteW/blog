@@ -1,0 +1,26 @@
+{# templates/blog/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Index{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block body %}
+
+    <h4>Rechercher un article</h4>
+    {{ form_start(form) }}
+    {{ form_row(form.searchField) }}
+    <button type="submit" name="btnSearch">Rechercher</button>
+    {{ form_end(form) }}
+
+    <h4 class="mt-5">All articles : </h4>
+    {% for article in articles %}
+        <div>
+            <h5>{{ loop.index }} / {{ article.title }} - Category : {{ article.category.name }}</h5>
+            <p>{{ article.content }}</p>
+        </div>
+    {% endfor %}
+    <a href="{{ path('homepage') }}">
+        Back to homepage.
+    </a>
+{% endblock %}

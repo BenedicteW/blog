@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello !{% endblock %}
+
+{% block body %}
+
+    <h1>Hello WCS</h1>
+
+    <ul>
+        <li><h4><a href="{{ path('blog_list') }}">Voir tous les articles</a></h4></li>
+        <li><h4><a href="{{ path('blog_search') }}">Rechercher un article </a></h4></li>
+        <li><h4><a href="{{ path('category_add') }}">Ajouter une categorie </a></h4></li>
+    </ul>
+
+{% endblock %}

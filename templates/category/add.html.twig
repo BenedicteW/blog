@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello !{% endblock %}
+
+{% block body %}
+
+    <h4>Ajouter une catégorie</h4>
+    {{ form_start(add) }}
+    {{ form_row(add.name) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_end(add) }}
+
+{% endblock %}
