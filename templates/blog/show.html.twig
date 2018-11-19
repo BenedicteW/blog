@@ -1,7 +1,7 @@
 {# templates/blog/show.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ slug }}{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
 
 {% block stylesheets %}{% endblock %}
 
@@ -11,6 +11,15 @@
         <h1>Title : {{ article.title }}</h1>
         <h4>Category : {{ article.category.name }}</h4>
         <p>{{ article.content }}</p>
+        <strong>Tags :</strong>
+        <ul>
+            {% for tag in article.tags %}
+                <li>{{ tag.name }} - <a href="{{ path('tag_show_articles', {'name':tag.name}) }}">Afficher tous les articles de ce tag</a> </li>
+            {% else %}
+                <li>No tags for this article</li>
+            {% endfor %}
+        </ul>
+
     </div>
 
     <a href="{{ path('homepage') }}">

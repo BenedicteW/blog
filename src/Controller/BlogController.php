@@ -63,8 +63,6 @@ class BlogController extends AbstractController
     }
 
     /**
-     * Getting a article with a formatted slug for title
-     *
      * @param string $slug The slugger
      *
      * @Route("/blog/{slug<^[a-z0-9-]+$>}",
@@ -94,7 +92,7 @@ class BlogController extends AbstractController
             );
         }
 
-        return $this->render('blog/show.html.twig', ['article' => $article, 'slug'=>$slug]);
+        return $this->render('blog/show.html.twig', ['article' => $article]);
     }
 
 }
