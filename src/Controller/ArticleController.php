@@ -19,14 +19,38 @@ use Symfony\Component\Routing\Annotation\Route;
 class ArticleController extends AbstractController
 {
     /**
+     * @Route("/article/show/{id}", name="article_show")
+     * @return Response A response instance
+     */
+    public function show($id) :Response
+    {
+        if (!$id) {
+            throw $this
+                ->createNotFoundException('No slug has been sent to find an article in article\'s table.');
+        }
+
+        $article = $this->getDoctrine()
+            ->getRepository(Article::class)
+            ->findOneById($id);
+
+        if (!$article) {
+            throw $this->createNotFoundException(
+                'No article with title, found in article\'s table.'
+            );
+        }
+
+        return $this->render('blog/show.html.twig', ['article' => $article]);
+    }
+
+    /**
      * @param string $slug The slugger
      *
-     * @Route("/article/{slug<^[a-z0-9-]+$>}",
+     * @Route("/article/search/{slug<^[a-z0-9-]+$>}",
      *     defaults={"slug" = null},
-     *     name="article_show")
+     *     name="article_search")
      *  @return Response A response instance
      */
-    public function show($slug) : Response
+    public function search($slug) : Response
     {
         if (!$slug) {
             throw $this
@@ -48,7 +72,6 @@ class ArticleController extends AbstractController
             );
         }
 
-        return $this->render('blog/show.html.twig', ['article' => $article]);
     }
 
     /**
