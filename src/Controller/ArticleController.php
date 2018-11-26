@@ -10,6 +10,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Article;
 use App\Form\ArticleType;
+use App\Service\Slugify;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -77,18 +78,41 @@ class ArticleController extends AbstractController
     /**
      * @Route("/article/add/", name="article_add")
      */
-    public function add(Request $request) :Response
+    public function add(Request $request, Slugify $slugify) :Response
     {
         $article = new Article();
         $addArticle = $this->createForm(ArticleType::class, $article);
         $addArticle->handleRequest($request);
         if ($addArticle->isSubmitted() && $addArticle->isValid()){
             $articleEntity = $this->getDoctrine()->getManager();
+            $slug = $slugify->generate($article->getTitle());
+            $article->setSlug($slug);
             $articleEntity->persist($article);
             $articleEntity->flush();
-            return $this->redirectToRoute('article_show', ['slug'=>$article->getTitle()]);
+            return $this->redirectToRoute('article_show', ['id'=>$article->getId()]);
         }
 
         return $this->render('article/add.html.twig', ['add'=>$addArticle->createView()]);
+    }
+
+    /**
+     * @Route("/article/{id}/edit", name="article_edit", methods="GET|POST")
+     */
+    public function edit(Request $request, Article $article, Slugify $slugify): Response
+    {
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugify->generate($article->getTitle());
+            $article->setSlug($slug);
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('article_show', ['id' => $article->getId()]);
+        }
+
+        return $this->render('article/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
