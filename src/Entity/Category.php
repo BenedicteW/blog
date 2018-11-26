@@ -25,6 +25,7 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="category")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $articles;
 

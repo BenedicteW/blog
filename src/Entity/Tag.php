@@ -33,6 +33,15 @@ class Tag
         $this->articles = new ArrayCollection();
     }
 
+    /**
+     * toString
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getArticles();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
